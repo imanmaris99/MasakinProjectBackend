@@ -4,7 +4,7 @@ from app.models.users import User
 
 user_blueprint = Blueprint('user_endpoint', __name__)
 
-# coba koneksifitas ke database via supabase--------
+# coba koneksifitas CRUD ke database via supabase--------
 @user_blueprint.route("/", methods=["GET"])
 def get_list_user():
     try:
@@ -24,7 +24,8 @@ def create_user():
         new_user.username=data["username"]
         new_user.firstname=data["firstname"]
         new_user.lastname=data["lastname"]
-        # new_user.email=data["email"]
+        new_user.email=data["email"]
+        new_user.phone=data["phone"]
         new_user.password=data["password"]
         new_user.role='member'
 
@@ -33,10 +34,13 @@ def create_user():
 
         registration_data = {
             'id': new_user.id,
-            # 'email': new_user.email,
+            'email': new_user.email,
             'username': new_user.username,
+            "phone": new_user.phone,
             'password': new_user.password,
             'role': new_user.role,
+            'created_at': new_user.created_at,
+            'updated_at': new_user.updated_at
         }
         return registration_data,201
 

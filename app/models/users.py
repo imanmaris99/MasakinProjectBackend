@@ -21,6 +21,7 @@ class User(db.Model):
             "firstname": self.firstname,
             "lastname": self.lastname,
             "email": self.email,
+            "phone": self.phone,
             "password": self.password,
             "role": self.role,
             "created_at": self.created_at,

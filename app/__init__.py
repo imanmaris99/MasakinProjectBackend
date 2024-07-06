@@ -25,8 +25,8 @@ db.init_app(app)
 migrate.init_app(app, db)
 
 # # Setting JWT secret key directly
-# app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
-# jwt = JWTManager(app)
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+jwt = JWTManager(app)
 
 # # Registering blueprints
 app.register_blueprint(user_route.user_blueprint, url_prefix='/user')
