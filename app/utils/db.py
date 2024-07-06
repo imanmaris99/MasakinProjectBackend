@@ -18,7 +18,7 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 
-# Contoh URI koneksi PostgreSQL
+# URI koneksi PostgreSQL
 # Pastikan DATABASE_URI diatur dengan benar sesuai dengan konfigurasi Anda
 DATABASE_URI = f"{DB_TYPE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 

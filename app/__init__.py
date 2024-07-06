@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from app.utils.db import db, migrate
+from app.models import users
 from app.controllers.user import user_route
 from dotenv import load_dotenv
 from flask_cors import CORS
