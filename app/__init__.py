@@ -15,13 +15,13 @@ CORS(app)
 load_dotenv()
 
 # Debugging output to check environment variables
-print("DB_TYPE:", os.getenv('DB_TYPE'))
-print("DB_NAME:", os.getenv('DB_NAME'))
-print("DB_USER:", os.getenv('DB_USER'))
-print("DB_PASSWORD:", os.getenv('DB_PASSWORD'))
-print("DB_HOST:", os.getenv('DB_HOST'))
-print("DB_PORT:", os.getenv('DB_PORT'))
-print("DATABASE_URI:", os.getenv('DATABASE_URI'))
+# print("DB_TYPE:", os.getenv('DB_TYPE'))
+# print("DB_NAME:", os.getenv('DB_NAME'))
+# print("DB_USER:", os.getenv('DB_USER'))
+# print("DB_PASSWORD:", os.getenv('DB_PASSWORD'))
+# print("DB_HOST:", os.getenv('DB_HOST'))
+# print("DB_PORT:", os.getenv('DB_PORT'))
+# print("DATABASE_URI:", os.getenv('DATABASE_URI'))
 
 # Setting database URI directly
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')

@@ -30,7 +30,7 @@ else:
     DATABASE_URI = os.getenv('DATABASE_URI')
 
 # Debugging output
-print("Constructed DATABASE_URI:", DATABASE_URI)
+# print("Constructed DATABASE_URI:", DATABASE_URI)
 
 engine = create_engine(DATABASE_URI)
 Session = scoped_session(sessionmaker(bind=engine))
