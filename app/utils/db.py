@@ -21,6 +21,7 @@ DB_PORT = os.getenv("DB_PORT")
 # URI koneksi PostgreSQL
 # Pastikan DATABASE_URI diatur dengan benar sesuai dengan konfigurasi Anda
 DATABASE_URI = f"{DB_TYPE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+print(f"DATABASE_URI: {DATABASE_URI}")  # Debug print untuk memeriksa nilai DATABASE_URI
 
 engine = create_engine(DATABASE_URI)
 Session = scoped_session(sessionmaker(bind=engine))
