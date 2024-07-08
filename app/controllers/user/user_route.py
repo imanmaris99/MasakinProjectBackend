@@ -73,58 +73,9 @@ def login_user():
         return jsonify({"message": str(e)}), 500
 
 #ADMIN-->>>>
-@user_blueprint.route("/register/admin", methods=["POST"])
-def create_user_admin():
-    try:
-        data = request.json
-        # Validasi input
-        required_fields = ['username', 'firstname', 'lastname', 'email', 'phone', 'password']
-        for field in required_fields:
-            if field not in data:
-                return jsonify({"message": f"Missing field: {field}"}), 400
-        
-        hashed_password = bcrypt.generate_password_hash(data["password"]).decode('utf-8')
-        
-        new_user = User(username=data["username"],
-                        firstname=data["firstname"],
-                        lastname=data["lastname"],
-                        email=data["email"],
-                        phone=data["phone"],
-                        password=hashed_password,
-                        role='admin')
-        
-        db.session.add(new_user)
-        db.session.commit()
-
-        registration_data = {
-            'id': new_user.id,
-            'email': new_user.email,
-            'username': new_user.username,
-            "phone": new_user.phone,
-            'role': new_user.role,
-            'created_at': new_user.created_at.isoformat(),
-            'updated_at': new_user.updated_at.isoformat() if new_user.updated_at else None
-        }
-        return jsonify(registration_data), 201
-
-    except KeyError as e:
-        return jsonify({"message": f"Missing key: {str(e)}"}), 400
-    except Exception as e:
-        return jsonify({"message": str(e)}), 500
-    
 # @user_blueprint.route("/register/admin", methods=["POST"])
-# @jwt_required()
 # def create_user_admin():
 #     try:
-#         # Mendapatkan identitas pengguna yang saat ini login dari token JWT
-#         current_user_id = get_jwt_identity()
-
-#         # Querying untuk mendapatkan data pengguna yang saat ini login
-#         user = User.query.filter_by(id=current_user_id).first()
-        
-#         if user.role != 'admin':
-#             return jsonify({"message": "Only admins can create other admin users"}), 403
-        
 #         data = request.json
 #         # Validasi input
 #         required_fields = ['username', 'firstname', 'lastname', 'email', 'phone', 'password']
@@ -160,3 +111,52 @@ def create_user_admin():
 #         return jsonify({"message": f"Missing key: {str(e)}"}), 400
 #     except Exception as e:
 #         return jsonify({"message": str(e)}), 500
+    
+@user_blueprint.route("/register/admin", methods=["POST"])
+@jwt_required()
+def create_user_admin():
+    try:
+        # Mendapatkan identitas pengguna yang saat ini login dari token JWT
+        current_user_id = get_jwt_identity()
+
+        # Querying untuk mendapatkan data pengguna yang saat ini login
+        user = User.query.filter_by(id=current_user_id).first()
+        
+        if user.role != 'admin':
+            return jsonify({"message": "Only admins can create other admin users"}), 403
+        
+        data = request.json
+        # Validasi input
+        required_fields = ['username', 'firstname', 'lastname', 'email', 'phone', 'password']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({"message": f"Missing field: {field}"}), 400
+        
+        hashed_password = bcrypt.generate_password_hash(data["password"]).decode('utf-8')
+        
+        new_user = User(username=data["username"],
+                        firstname=data["firstname"],
+                        lastname=data["lastname"],
+                        email=data["email"],
+                        phone=data["phone"],
+                        password=hashed_password,
+                        role='admin')
+        
+        db.session.add(new_user)
+        db.session.commit()
+
+        registration_data = {
+            'id': new_user.id,
+            'email': new_user.email,
+            'username': new_user.username,
+            "phone": new_user.phone,
+            'role': new_user.role,
+            'created_at': new_user.created_at.isoformat(),
+            'updated_at': new_user.updated_at.isoformat() if new_user.updated_at else None
+        }
+        return jsonify(registration_data), 201
+
+    except KeyError as e:
+        return jsonify({"message": f"Missing key: {str(e)}"}), 400
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
