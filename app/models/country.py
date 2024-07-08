@@ -4,10 +4,11 @@ from app.utils.db import db
 class Country(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    code = db.Column(db.String(100), nullable=False)
+    code = db.Column(db.String(10), nullable=False)
     country_name = db.Column(db.String(100), nullable=False)
     continent_name = db.Column(db.String, nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now()) 
+    
 
     def as_dict(self):
         return{
