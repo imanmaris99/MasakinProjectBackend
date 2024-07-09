@@ -17,7 +17,7 @@ class Recipe(db.Model):
     def average_rating(self):
         # Hitung rata-rata rating untuk resep ini
         avg_rating = db.session.query(func.avg(RatingRecipe.rating)).filter_by(food_id=self.id).scalar()
-        return avg_rating if avg_rating is not None else 0.0  # Mengembalikan 0.0 jika tidak ada rating    
+        return round(avg_rating, 1) if avg_rating is not None else 0.0  # Mengembalikan 0.0 jika tidak ada rating    
 
     def as_dict(self):
         return{
