@@ -1,9 +1,10 @@
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from app.utils.db import db, migrate
-from app.models import users,recipes,country,rating_recipe,food
+from app.models import users,country,food,rating_recipe,utensil_name,ingredient_name,cooking_type
 from app.controllers.user import user_route
-from app.controllers.recipe import recipe_route
+# from app.controllers.recipe import recipe_route
+# from app.controllers.recipe_detail import recipe_detail_route
 from app.controllers.country import country_route
 from app.controllers.rating_recipe import rating_recipe_route
 from app.controllers.food import food_route
@@ -44,7 +45,8 @@ jwt = JWTManager(app)
 # # Registering blueprints
 app.register_blueprint(user_route.user_blueprint, url_prefix='/user')
 app.register_blueprint(food_route.food_blueprint, url_prefix='/food')
-app.register_blueprint(recipe_route.recipe_blueprint, url_prefix='/recipe')
+# app.register_blueprint(recipe_route.recipe_blueprint, url_prefix='/recipe')
+# app.register_blueprint(recipe_detail_route.recipe_detail_blueprint, url_prefix='/recipe_detail')
 app.register_blueprint(country_route.country_blueprint, url_prefix='/country')
 app.register_blueprint(rating_recipe_route.ratingrecipe_blueprint, url_prefix='/rating_recipe')
 

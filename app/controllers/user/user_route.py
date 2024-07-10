@@ -36,6 +36,8 @@ def create_user():
                         firstname=data["firstname"],
                         lastname=data["lastname"],
                         email=data["email"],
+                        facebook=data.get("facebook", None),
+                        google=data.get("google", None),
                         phone=data["phone"],
                         password=hashed_password,
                         role='member')
@@ -43,16 +45,22 @@ def create_user():
         db.session.add(new_user)
         db.session.commit()
 
-        registration_data = {
-            'id': new_user.id,
-            'email': new_user.email,
-            'username': new_user.username,
-            "phone": new_user.phone,
-            'role': new_user.role,
-            'created_at': new_user.created_at.isoformat(),
-            'updated_at': new_user.updated_at.isoformat() if new_user.updated_at else None
-        }
-        return jsonify(registration_data), 201
+        # Menyusun data respons
+        response_data = new_user.as_dict()
+
+        # Mengembalikan respons dengan status 201
+        return jsonify(response_data), 201
+
+        # registration_data = {
+        #     'id': new_user.id,
+        #     'email': new_user.email,
+        #     'username': new_user.username,
+        #     "phone": new_user.phone,
+        #     'role': new_user.role,
+        #     'created_at': new_user.created_at.isoformat(),
+        #     'updated_at': new_user.updated_at.isoformat() if new_user.updated_at else None
+        # }
+        # return jsonify(registration_data), 201
 
     except KeyError as e:
         return jsonify({"message": f"Missing key: {str(e)}"}), 400
@@ -85,27 +93,24 @@ def login_user():
         
 #         hashed_password = bcrypt.generate_password_hash(data["password"]).decode('utf-8')
         
-#         new_user = User(username=data["username"],
+#         new_user_admin = User(username=data["username"],
 #                         firstname=data["firstname"],
 #                         lastname=data["lastname"],
 #                         email=data["email"],
+#                         facebook=data.get("facebook", None),
+#                         google=data.get("google", None),
 #                         phone=data["phone"],
 #                         password=hashed_password,
 #                         role='admin')
         
-#         db.session.add(new_user)
+#         db.session.add(new_user_admin)
 #         db.session.commit()
 
-#         registration_data = {
-#             'id': new_user.id,
-#             'email': new_user.email,
-#             'username': new_user.username,
-#             "phone": new_user.phone,
-#             'role': new_user.role,
-#             'created_at': new_user.created_at.isoformat(),
-#             'updated_at': new_user.updated_at.isoformat() if new_user.updated_at else None
-#         }
-#         return jsonify(registration_data), 201
+#         # Menyusun data respons
+#         response_data = new_user_admin.as_dict()
+
+#         # Mengembalikan respons dengan status 201
+#         return jsonify(response_data), 201
 
 #     except KeyError as e:
 #         return jsonify({"message": f"Missing key: {str(e)}"}), 400
@@ -134,27 +139,24 @@ def create_user_admin():
         
         hashed_password = bcrypt.generate_password_hash(data["password"]).decode('utf-8')
         
-        new_user = User(username=data["username"],
+        new_user_admin = User(username=data["username"],
                         firstname=data["firstname"],
                         lastname=data["lastname"],
                         email=data["email"],
+                        facebook=data.get("facebook", None),
+                        google=data.get("google", None),
                         phone=data["phone"],
                         password=hashed_password,
                         role='admin')
         
-        db.session.add(new_user)
+        db.session.add(new_user_admin)
         db.session.commit()
 
-        registration_data = {
-            'id': new_user.id,
-            'email': new_user.email,
-            'username': new_user.username,
-            "phone": new_user.phone,
-            'role': new_user.role,
-            'created_at': new_user.created_at.isoformat(),
-            'updated_at': new_user.updated_at.isoformat() if new_user.updated_at else None
-        }
-        return jsonify(registration_data), 201
+        # Menyusun data respons
+        response_data = new_user_admin.as_dict()
+
+        # Mengembalikan respons dengan status 201
+        return jsonify(response_data), 201
 
     except KeyError as e:
         return jsonify({"message": f"Missing key: {str(e)}"}), 400

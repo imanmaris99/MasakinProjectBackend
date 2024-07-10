@@ -9,6 +9,8 @@ class User(db.Model):
     firstname = db.Column(db.String(100), nullable=True)
     lastname = db.Column(db.String(100), nullable=True)
     email = db.Column(db.String(100), nullable=False, unique=True)
+    facebook = db.Column(db.String(100), nullable=True, unique=True)
+    google = db.Column(db.String(100), nullable=True, unique=True)
     phone = db.Column(db.String(15), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(100), nullable=True)
@@ -24,6 +26,12 @@ class User(db.Model):
             "firstname": self.firstname,
             "lastname": self.lastname,
             "email": self.email,
+            'web_accounts': [
+                {'type': 'facebook', 'account': self.facebook},
+                {'type': 'google', 'account': self.google},
+            ],
+            "facebook": self.facebook,
+            "google": self.google,
             "phone": self.phone,
             "role": self.role,
             "created_at": self.created_at.isoformat(),  # ISO format string
