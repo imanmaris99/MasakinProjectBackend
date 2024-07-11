@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from app.utils.db import db, migrate
-from app.models import users,country,food,rating_recipe,utensil_name,ingredient_name,cooking_type,recipes,cooking_utensils,ingredient_details
+from app.models import users,country,food,rating_recipe,utensil_name,ingredient_name,cooking_type,recipes,cooking_utensils,ingredient_details,how_to_cook,bookmarks
 from app.controllers.user import user_route
 # from app.controllers.recipe import recipe_route
 # from app.controllers.recipe_detail import recipe_detail_route

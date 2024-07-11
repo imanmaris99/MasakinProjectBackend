@@ -2,6 +2,7 @@ from sqlalchemy import DateTime, func
 from app.models.cooking_utensils import CookingUtensils
 from app.models.country import Country
 from app.models.food import Food
+from app.models.how_to_cook import HowToCooks
 from app.models.ingredient_details import IngredientDetails
 from app.models.rating_recipe import RatingRecipe
 from app.utils.db import db
@@ -14,8 +15,9 @@ class Recipes(db.Model):
     country_id = db.Column(db.Integer, db.ForeignKey('country.id'), nullable=False)
     ingredients = db.Column(db.Integer, db.ForeignKey('ingredient_details.id'), nullable=True)
     utensils = db.Column(db.Integer, db.ForeignKey('cooking_utensils.id'), nullable=True)
-    how_to_cook = db.Column(db.Integer, nullable=True)
+    how_to_cook = db.Column(db.Integer, db.ForeignKey('how_to_cooks.id'), nullable=True)
     instructions= db.Column(db.Text, nullable=True)
+    servings= db.Column(db.Integer, nullable=False)
     cooking_video = db.Column(db.String(255), nullable=True)
     cooking_time = db.Column(db.Integer, nullable=False) 
     dificultly_level = db.Column(db.Integer, nullable=False)
@@ -29,6 +31,7 @@ class Recipes(db.Model):
     user = db.relationship("User")
     ingredientdetails = db.relationship("IngredientDetails", back_populates="recipe", cascade="all, delete-orphan")
     cookingutensils = db.relationship("CookingUtensils", back_populates="recipe", cascade="all, delete-orphan")
+    howtocooks = db.relationship("HowToCooks", back_populates="recipe", cascade="all, delete-orphan")
 
 
 
@@ -54,6 +57,10 @@ class Recipes(db.Model):
         utensil_info = CookingUtensils.query.filter_by(id=self.utensils).all()
         utensil_info_list = [cookingutensil.as_dict() for cookingutensil in utensil_info] 
 
+        # Dapatkan semua info cara memasak dan typenya berdasarkan how_to_cook
+        how_to_cook_info = HowToCooks.query.filter_by(id=self.how_to_cook).all()
+        how_to_cook_info_list = [howtocooks.as_dict() for howtocooks in how_to_cook_info] 
+
 
         return{
             "id": self.id,
@@ -66,6 +73,8 @@ class Recipes(db.Model):
             "ingredient_info": ingredient_info_list if ingredient_info_list else None,
             "utensils": self.utensils,
             "utensil_info": utensil_info_list if utensil_info_list else None,
+            "how_to_cook": self.how_to_cook,
+            "how_to_cook_info": how_to_cook_info_list if how_to_cook_info_list else None,
             "instructions" : self.instructions,
             "cooking_video": self.cooking_video,
             "cooking_time" : self.cooking_time,

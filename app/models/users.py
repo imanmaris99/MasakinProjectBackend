@@ -18,7 +18,9 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     ratings = db.relationship("RatingRecipe", back_populates="user", cascade="all, delete-orphan")
+    bookmark = db.relationship("Bookmarks", back_populates="user", cascade="all, delete-orphan")
     
+
     def as_dict(self):
         return{
             "id": self.id,
