@@ -1,7 +1,7 @@
 from sqlalchemy import DateTime, func
 from app.models.cooking_utensils import CookingUtensils
 from app.models.country import Country
-from app.models.food import Food
+# from app.models.food import Food
 from app.models.how_to_cook import HowToCooks
 from app.models.ingredient_details import IngredientDetails
 from app.models.rating_recipe import RatingRecipe
@@ -10,7 +10,9 @@ from app.utils.db import db
 class Recipes(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    food_id = db.Column(db.Integer, db.ForeignKey('food.id'), nullable=False)
+    # food_id = db.Column(db.Integer, db.ForeignKey('food.id'), nullable=False)
+    food_name = db.Column(db.String(255), nullable=True)
+    food_image = db.Column(db.String(255), nullable=True)
     food_info = db.Column(db.Text, nullable=True)
     country_id = db.Column(db.Integer, db.ForeignKey('country.id'), nullable=False)
     ingredients = db.Column(db.Integer, db.ForeignKey('ingredient_details.id'), nullable=True)
@@ -27,7 +29,7 @@ class Recipes(db.Model):
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     country = db.relationship("Country")
-    food = db.relationship("Food")
+    # food = db.relationship("Food")
     user = db.relationship("User")
     ingredientdetails = db.relationship("IngredientDetails", back_populates="recipe", cascade="all, delete-orphan")
     cookingutensils = db.relationship("CookingUtensils", back_populates="recipe", cascade="all, delete-orphan")
@@ -37,7 +39,7 @@ class Recipes(db.Model):
 
     def average_rating(self):
         # Hitung rata-rata rating untuk resep ini
-        avg_rating = db.session.query(func.avg(RatingRecipe.rating)).filter_by(food_id=self.id).scalar()
+        avg_rating = db.session.query(func.avg(RatingRecipe.rating)).filter_by(self.id).scalar()
         return round(avg_rating, 1) if avg_rating is not None else 0.0  # Mengembalikan 0.0 jika tidak ada rating   
 
     def as_dict(self):
@@ -45,9 +47,9 @@ class Recipes(db.Model):
         country_info = Country.query.filter_by(id=self.country_id).all()
         countries_list = [country.as_dict() for country in country_info] 
 
-        # Dapatkan semua info food berdasarkan food_id
-        food_image = Food.query.filter_by(id=self.food_id).all()
-        foods_list = [food.as_dict() for food in food_image] 
+        # # Dapatkan semua info food berdasarkan food_id
+        # food_image = Food.query.filter_by(id=self.food_id).all()
+        # foods_list = [food.as_dict() for food in food_image] 
 
         # Dapatkan semua info komposisi berdasarkan ingredients
         ingredient_info = IngredientDetails.query.filter_by(id=self.ingredients).all()
@@ -64,8 +66,10 @@ class Recipes(db.Model):
 
         return{
             "id": self.id,
-            "food_id": self.food_id,
-            "food_image": foods_list,
+            # "food_id": self.food_id,
+            # "food_image": foods_list,
+            "food_name": self.food_name,
+            "food_image": self.food_image,
             "food_info": self.food_info,
             "country_id": self.country_id,
             "country_info": countries_list,

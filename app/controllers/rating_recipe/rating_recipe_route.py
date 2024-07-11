@@ -45,14 +45,11 @@ def create_rating_recipe():
         db.session.add(new_rating)
         db.session.commit()
 
-        registration_data = {
-            "id": new_rating.id,
-            "rating": new_rating.rating,
-            "food_id": new_rating.food_id,
-            "user_id": new_rating.user_id,
-            "created_at": new_rating.created_at.isoformat()  # Pastikan tanggal dibuat dalam format ISO
-        }
-        return jsonify(registration_data), 201
+        # Menyusun data respons
+        response_data = new_rating.as_dict()
+
+        # Mengembalikan respons dengan status 201
+        return jsonify(response_data), 201
     
     except KeyError as e:
         return jsonify({"message": f"Missing key: {str(e)}"}), 400
