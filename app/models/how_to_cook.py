@@ -1,4 +1,4 @@
-from sqlalchemy import DateTime, func
+from sqlalchemy import ARRAY, DateTime, func
 from app.models.cooking_type import CookingType
 from app.utils.db import db
 
@@ -6,13 +6,13 @@ class HowToCooks(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'), nullable=True)
-    instructions= db.Column(db.Text, nullable=True)
+    instructions= db.Column(ARRAY(db.Text), nullable=True)
     image = db.Column(db.String(255), nullable=True)
     cooking_type_id = db.Column(db.Integer, db.ForeignKey('cooking_type.id'), nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now()) 
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    recipe = db.relationship("Recipes", backref='howtocooks')
+    recipe = db.relationship("Recipes", back_populates='howtocooks')
     cookingtype = db.relationship("CookingType")
 
     def as_dict(self):

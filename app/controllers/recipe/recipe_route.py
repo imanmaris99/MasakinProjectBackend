@@ -32,7 +32,7 @@ def create_recipe():
         data = request.json
 
         # Validasi input
-        required_fields = ['food_name','country_id','ingredients','utensils','how_to_cook','instructions','servings','cooking_time','dificultly_level']
+        required_fields = ['food_name','country_id','instructions','servings','cooking_time','dificultly_level']
         for field in required_fields:
             if field not in data:
                 return jsonify({"message": f"Missing field: {field}"}), 400
@@ -43,9 +43,6 @@ def create_recipe():
             food_image=data.get("recipe_image", None),
             food_info=data.get("food_info", None),
             country_id=data["country_id"],
-            ingredients = data["ingredients"],
-            utensils= data["utensils"],
-            how_to_cook=data["how_to_cook"],
             instructions = data["instructions"],
             servings=data["servings"],
             cooking_video = data.get("cooking_video"),

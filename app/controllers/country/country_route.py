@@ -9,7 +9,7 @@ country_blueprint = Blueprint('country_endpoint', __name__)
 # coba koneksifitas CRUD ke database via supabase--------
 # sementara dan bisa berubah
 
-@country_blueprint.route("/all_countries", methods=["GET"])
+@country_blueprint.route("/all", methods=["GET"])
 def get_list_country():
     try:
         countries = Country.query.all()
@@ -25,7 +25,7 @@ def create_country():
         data = request.json
 
         # Validasi input
-        required_fields = ['code', 'country_name', 'continent_name']
+        required_fields = ['code', 'country_name']
         for field in required_fields:
             if field not in data:
                 return jsonify({"message": f"Missing field: {field}"}), 400
@@ -44,7 +44,6 @@ def create_country():
         new_country = Country(
             code=data["code"],
             country_name=data["country_name"],
-            continent_name=data["continent_name"]
         )
 
         # Menambahkan dan menyimpan objek ke dalam database
@@ -56,7 +55,6 @@ def create_country():
             "id": new_country.id,
             "code": new_country.code,
             "country_name": new_country.country_name,
-            "continent_name": new_country.continent_name,
             'created_at': new_country.created_at.isoformat() if new_country.created_at else None
         }
 

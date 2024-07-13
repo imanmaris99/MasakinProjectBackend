@@ -10,7 +10,7 @@ class Bookmarks(db.Model):
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     recipe = db.relationship("Recipes")
-    user = db.relationship("User", back_populates="bookmark")
+    user = db.relationship("User")
 
     def as_dict(self):
         return {
