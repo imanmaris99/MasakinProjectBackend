@@ -9,6 +9,7 @@ from app.controllers.how_to_cook import how_to_cook_route
 from app.controllers.cooking_utensil import cooking_utensil_route
 from app.controllers.country import country_route
 from app.controllers.rating_recipe import rating_recipe_route
+from app.controllers.bookmark import bookmark_route
 from dotenv import load_dotenv
 from flask_cors import CORS
 import os
@@ -51,6 +52,7 @@ app.register_blueprint(how_to_cook_route.how_to_cook_blueprint,url_prefix='/how_
 app.register_blueprint(cooking_utensil_route.cooking_utensil_blueprint, url_prefix='/cooking_utensil')
 app.register_blueprint(country_route.country_blueprint, url_prefix='/country')
 app.register_blueprint(rating_recipe_route.ratingrecipe_blueprint, url_prefix='/rating')
+app.register_blueprint(bookmark_route.bookmark_blueprint, url_prefix='/bookmark')
 
 # Defining routes here
 @app.route('/')
