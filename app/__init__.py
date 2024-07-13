@@ -50,7 +50,7 @@ app.register_blueprint(ingredient_detail_route.ingredient_detail_blueprint, url_
 app.register_blueprint(how_to_cook_route.how_to_cook_blueprint,url_prefix='/how_to_cook')
 app.register_blueprint(cooking_utensil_route.cooking_utensil_blueprint, url_prefix='/cooking_utensil')
 app.register_blueprint(country_route.country_blueprint, url_prefix='/country')
-app.register_blueprint(rating_recipe_route.ratingrecipe_blueprint, url_prefix='/rating_recipe')
+app.register_blueprint(rating_recipe_route.ratingrecipe_blueprint, url_prefix='/rating')
 
 # Defining routes here
 @app.route('/')
