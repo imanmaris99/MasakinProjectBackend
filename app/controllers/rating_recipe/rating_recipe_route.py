@@ -9,7 +9,7 @@ ratingrecipe_blueprint = Blueprint('ratingrecipe_endpoint', __name__)
 # coba koneksifitas CRUD ke database via supabase--------
 # sementara dan bisa berubah
 
-@ratingrecipe_blueprint.route("/all_rating", methods=["GET"])
+@ratingrecipe_blueprint.route("/all", methods=["GET"])
 def get_list_rating_recipe():
     try:
         rating_recipes = RatingRecipe.query.all()
@@ -18,38 +18,31 @@ def get_list_rating_recipe():
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
-@ratingrecipe_blueprint.route("/new_rating", methods=["POST"])
+@ratingrecipe_blueprint.route("/new_rate", methods=["POST"])
 @jwt_required()
-def create_rating_recipe():
+def rate_recipe():
     try:
+        current_user_id = get_jwt_identity()
         data = request.json
 
         # Validasi input
-        required_fields = ['rating', 'food_id']
+        required_fields = ['rating', 'recipe_id']
         for field in required_fields:
             if field not in data:
                 return jsonify({"message": f"Missing field: {field}"}), 400
 
-        # Mendapatkan identitas pengguna yang saat ini login dari token JWT
-        current_user_id = get_jwt_identity()
-
-        # Querying untuk mendapatkan data pengguna yang saat ini login
-        user = User.query.filter_by(id=current_user_id).first()
-        
+        # Membuat objek rating baru
         new_rating = RatingRecipe(
             rating=data["rating"],
-            food_id=data["food_id"],
-            user_id=current_user_id  # Menggunakan current_user_id yang sudah didapatkan
+            recipe_id=data["recipe_id"],
+            user_id=current_user_id
         )
 
+        # Menambahkan dan menyimpan objek ke dalam database
         db.session.add(new_rating)
         db.session.commit()
 
-        # Menyusun data respons
-        response_data = new_rating.as_dict()
-
-        # Mengembalikan respons dengan status 201
-        return jsonify(response_data), 201
+        return jsonify(new_rating.as_dict()), 201
     
     except KeyError as e:
         return jsonify({"message": f"Missing key: {str(e)}"}), 400
