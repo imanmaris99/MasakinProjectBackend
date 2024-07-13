@@ -10,11 +10,11 @@ class CookingUtensils(db.Model):
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now()) 
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    utensilname = db.relationship("UtensilName", backref=db.backref("cookingutensils", lazy=True))
-    recipe = db.relationship("Recipes", back_populates="cookingutensils")
+    utensilname = db.relationship("UtensilName", backref=db.backref("cooking_utensils", lazy=True))
+    recipe = db.relationship("Recipes", back_populates="cooking_utensils")
 
     def as_dict(self):
-        # Dapatkan semua info bahan berdasarkan ingredient_name_id
+        # Dapatkan semua info nama alat berdasarkan ingredient_name_id
         utensil_name_info = UtensilName.query.filter_by(id=self.utensil_name_id).all()
         utensil_name_info_list = [utensilname.as_dict() for utensilname in utensil_name_info] 
 

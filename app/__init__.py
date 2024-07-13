@@ -3,11 +3,12 @@ from flask_jwt_extended import JWTManager
 from app.utils.db import db, migrate
 from app.models import users,country,rating_recipe,utensil_name,ingredient_name,cooking_type,recipes,cooking_utensils,ingredient_details,how_to_cook,bookmarks
 from app.controllers.user import user_route
-# from app.controllers.recipe import recipe_route
-# from app.controllers.recipe_detail import recipe_detail_route
+from app.controllers.recipe import recipe_route
+from app.controllers.ingredient_detail import ingredient_detail_route
+from app.controllers.how_to_cook import how_to_cook_route
+from app.controllers.cooking_utensil import cooking_utensil_route
 from app.controllers.country import country_route
 from app.controllers.rating_recipe import rating_recipe_route
-from app.controllers.recipe import recipe_route
 from dotenv import load_dotenv
 from flask_cors import CORS
 import os
@@ -45,8 +46,9 @@ jwt = JWTManager(app)
 # # Registering blueprints
 app.register_blueprint(user_route.user_blueprint, url_prefix='/user')
 app.register_blueprint(recipe_route.recipe_blueprint, url_prefix='/recipe')
-# app.register_blueprint(recipe_route.recipe_blueprint, url_prefix='/recipe')
-# app.register_blueprint(recipe_detail_route.recipe_detail_blueprint, url_prefix='/recipe_detail')
+app.register_blueprint(ingredient_detail_route.ingredient_detail_blueprint, url_prefix='/ingredient')
+app.register_blueprint(how_to_cook_route.how_to_cook_blueprint,url_prefix='/how_to_cook')
+app.register_blueprint(cooking_utensil_route.cooking_utensil_blueprint, url_prefix='/cooking_utensil')
 app.register_blueprint(country_route.country_blueprint, url_prefix='/country')
 app.register_blueprint(rating_recipe_route.ratingrecipe_blueprint, url_prefix='/rating_recipe')
 

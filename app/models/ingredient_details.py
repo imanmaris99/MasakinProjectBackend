@@ -7,11 +7,11 @@ class IngredientDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'), nullable=False)
     ingredient_name_id = db.Column(db.Integer, db.ForeignKey('ingredient_name.id'), nullable=False)
-    dose = db.Column(db.Integer, nullable=False)
+    dose = db.Column(db.String(25), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now()) 
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())  
 
-    recipe = db.relationship("Recipes", backref='ingredientdetails')
+    recipe = db.relationship("Recipes", back_populates="ingredientdetails")
     ingredientname = db.relationship("IngredientName")
 
     def as_dict(self):
