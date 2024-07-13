@@ -40,7 +40,7 @@ def create_recipe():
         # Membuat objek recipe baru
         new_recipe = Recipes(
             food_name=data["food_name"],
-            food_image=data.get("recipe_image", None),
+            food_image=data.get("recipe_image"),
             food_info=data.get("food_info", None),
             country_id=data["country_id"],
             instructions = data["instructions"],
