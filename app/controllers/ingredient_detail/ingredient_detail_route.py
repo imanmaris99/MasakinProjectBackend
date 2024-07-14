@@ -18,6 +18,18 @@ def get_list_ingredients():
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     
+@ingredient_detail_blueprint.route("/recipe_id/<int:recipe_id>", methods=["GET"])
+def get_list_ingredient_by_recipe_id(recipe_id):
+    try:
+        ingredient_list = IngredientDetails.query.filter_by(recipe_id=recipe_id).all()
+        if ingredient_list:
+            return jsonify([ingredient.as_dict() for ingredient in ingredient_list]), 200
+        else:
+            return jsonify({"message: recipe_id not found"}), 404
+        
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
 # Endpoint untuk mendapatkan daftar bahan (GET)
 @ingredient_detail_blueprint.route("/all/database", methods=["GET"])
 def get_list_ingredient_database():
