@@ -18,6 +18,7 @@ def get_list_recipes():
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     
+#endpoint get recipe by id 
 @recipe_blueprint.route("/<int:id>", methods=["GET"])
 def get_list_recipe_by_id(id):
     try:
@@ -29,7 +30,34 @@ def get_list_recipe_by_id(id):
     
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+    
+#endpoint get recipe by country 
+@recipe_blueprint.route("/country/<int:country_id>", methods=["GET"])
+def get_recipes_by_country_id(country_id):
+    try:
+        recipes = Recipes.query.filter_by(country_id=country_id).all()
+        if recipes:
+            recipe_data = [recipe.simple_view() for recipe in recipes]
+            return jsonify(recipe_data), 200
+        else:
+            return jsonify({"message": "No recipes found for this country"}), 404
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
 
+#endpoint get recipe by title
+@recipe_blueprint.route("/title/<string:title>", methods=["GET"])
+def get_recipes_by_title(title):
+    try:
+        recipes = Recipes.query.filter(func.lower(Recipes.food_name).contains(func.lower(title))).all()
+        if recipes:
+            recipe_data = [recipe.simple_view() for recipe in recipes]
+            return jsonify(recipe_data), 200
+        else:
+            return jsonify({"message": "No recipes found with this title"}), 404
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+#endpoint create recipe
 @recipe_blueprint.route("/new_recipe", methods=["POST"])
 @jwt_required()
 def create_recipe():
@@ -76,5 +104,67 @@ def create_recipe():
 
     except KeyError as e:
         return jsonify({"message": f"Missing key: {str(e)}"}), 400
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
+#endpoint edit recipe
+@recipe_blueprint.route("/edit/<int:recipe_id>", methods=["PUT"])
+@jwt_required()
+def edit_recipe(recipe_id):
+    try:
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(id=current_user_id).first()
+
+        # Pengecekan apakah pengguna adalah admin
+        if current_user.role != 'admin':
+            return jsonify({"message": "Unauthorized access"}), 403
+
+        recipe = Recipes.query.get(recipe_id)
+
+        if recipe:
+            data = request.json
+
+            # Validasi input
+            required_fields = ['food_name','country_id','instructions','servings','cooking_time','dificultly_level']
+            for field in required_fields:
+                if field in data:
+                    setattr(recipe, field, data[field])
+
+            db.session.commit()
+
+            # Menyusun data respons
+            response_data = recipe.as_dict()
+
+            # Mengembalikan respons dengan status 200
+            return jsonify(response_data), 200
+        else:
+            return jsonify({"message": "Recipe not found"}), 404
+
+    except KeyError as e:
+        return jsonify({"message": f"Missing key: {str(e)}"}), 400
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+#endpoint DELETE recipe by id
+@recipe_blueprint.route("/delete/<int:recipe_id>", methods=["DELETE"])
+@jwt_required()
+def delete_recipe(recipe_id):
+    try:
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(id=current_user_id).first()
+
+        # Pengecekan apakah pengguna adalah admin
+        if current_user.role != 'admin':
+            return jsonify({"message": "Unauthorized access"}), 403
+
+        recipe = Recipes.query.get(recipe_id)
+
+        if recipe:
+            db.session.delete(recipe)
+            db.session.commit()
+            return jsonify({"message": "Recipe deleted successfully"}), 200
+        else:
+            return jsonify({"message": "Recipe not found"}), 404
+
     except Exception as e:
         return jsonify({"message": str(e)}), 500

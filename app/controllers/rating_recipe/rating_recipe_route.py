@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from sqlalchemy import func
 from app.models.users import User
 from app.utils.db import db
 from app.models.rating_recipe import RatingRecipe
@@ -46,5 +47,18 @@ def rate_recipe():
     
     except KeyError as e:
         return jsonify({"message": f"Missing key: {str(e)}"}), 400
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+@ratingrecipe_blueprint.route("/average/<int:recipe_id>", methods=["GET"])
+def get_average_rating(recipe_id):
+    try:
+        average_rating = db.session.query(func.avg(RatingRecipe.rating)).filter_by(recipe_id=recipe_id).scalar()
+        
+        if average_rating is not None:
+            return jsonify({"recipe_id": recipe_id, "average_rating": round(average_rating, 2)}), 200
+        else:
+            return jsonify({"message": "No ratings found for this recipe"}), 404
+    
     except Exception as e:
         return jsonify({"message": str(e)}), 500
