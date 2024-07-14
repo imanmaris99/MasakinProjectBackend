@@ -13,8 +13,20 @@ recipe_blueprint = Blueprint('recipe_endpoint', __name__)
 def get_list_recipes():
     try:
         recipes = Recipes.query.all()
-        recipe_data = [recipe.as_dict() for recipe in recipes]
+        recipe_data = [recipe.simple_view() for recipe in recipes]
         return jsonify(recipe_data), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
+@recipe_blueprint.route("/<int:id>", methods=["GET"])
+def get_list_recipe_by_id(id):
+    try:
+        recipe = Recipes.query.get(id)
+        if recipe :
+            return jsonify(recipe.as_dict()), 200
+        else :
+            return jsonify({"message: recipe not found"}), 404
+    
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
@@ -40,7 +52,7 @@ def create_recipe():
         # Membuat objek recipe baru
         new_recipe = Recipes(
             food_name=data["food_name"],
-            food_image=data.get("recipe_image"),
+            food_image=data.get("food_image"),
             food_info=data.get("food_info", None),
             country_id=data["country_id"],
             instructions = data["instructions"],

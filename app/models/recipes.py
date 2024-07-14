@@ -91,6 +91,25 @@ class Recipes(db.Model):
         }
     
 
+    def simple_view(self):
+        # Dapatkan semua info negara berdasarkan country_id
+        country_info = Country.query.filter_by(id=self.country_id).all()
+        countries_list = [country.as_dict() for country in country_info] 
+
+        return{
+            "id": self.id,
+            "food_name": self.food_name,
+            "food_image": self.food_image,
+            "country_id": self.country_id,
+            "country_info": countries_list,
+            "cooking_video": self.cooking_video,
+            "cooking_time" : self.cooking_time,
+            "dificultly_level" : self.dificultly_level,
+            "rating": self.average_rating(), # Menggunakan self.average_rating() untuk mendapatkan nilai rata-rata rating
+            "created_at": self.created_at.isoformat(),  # Format ISO datetime string
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None  # Format ISO datetime string or None
+        }
+
     # country = db.relationship('Country', backref=db.backref('recipe', lazy=True))
     # food = db.relationship('Food', backref=db.backref('recipe'))
     # ratings = db.relationship("RatingRecipe", back_populates="recipe")
