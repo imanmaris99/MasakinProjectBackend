@@ -18,7 +18,7 @@ def get_bookmarks():
         return jsonify({"message": str(e)}), 500
     
 # Endpoint untuk mendapatkan bookmark berdasarkan recipe_id (GET)
-@bookmark_blueprint.route("/user/<int:recipe_id>", methods=["GET"])
+@bookmark_blueprint.route("/recipe/<int:recipe_id>", methods=["GET"])
 def get_bookmarks_by_user_from_recipe_id(recipe_id):
     try:
         bookmarks = Bookmarks.query.filter_by(recipe_id=recipe_id).all()
