@@ -1,20 +1,78 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.models.country import Country
 from app.utils.db import db
 from app.models.recipes import Recipes
 from app.models.users import User
 from app.models.rating_recipe import RatingRecipe
-from sqlalchemy import func
+from sqlalchemy import asc, desc, func
+# from sqlalchemy.orm import aliased
 
 recipe_blueprint = Blueprint('recipe_endpoint', __name__)
 
-# Endpoint untuk mendapatkan daftar makanan (GET)
+# Endpoint untuk mendapatkan daftar makanan (GET) dengan filter berdasarkan tanggal pembuatan
 @recipe_blueprint.route("/all", methods=["GET"])
 def get_list_recipes():
     try:
-        recipes = Recipes.query.all()
+        # Mendapatkan parameter query untuk sorting
+        sort_order = request.args.get('sort', 'desc')
+        date_filter = request.args.get('date')
+
+        # Query dasar untuk mendapatkan semua resep
+        query = Recipes.query
+
+        # Filter berdasarkan tanggal jika diberikan
+        if date_filter:
+            query = query.filter(Recipes.updated_at >= date_filter)
+
+        # Menyortir berdasarkan tanggal update
+        if sort_order == 'asc':
+            query = query.order_by(asc(Recipes.updated_at))
+        else:
+            query = query.order_by(desc(Recipes.updated_at))
+            
+        recipes = query.all()
         recipe_data = [recipe.simple_view() for recipe in recipes]
         return jsonify(recipe_data), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
+
+# Endpoint untuk mendapatkan daftar makanan (GET) dengan filter berdasarkan rating paling tinggi
+@recipe_blueprint.route("/all/popular", methods=["GET"])
+def get_list_recipe_popular():
+    try:
+        # Mendapatkan parameter query untuk sorting
+        sort_order = request.args.get('sort', 'desc')
+        date_filter = request.args.get('date')
+
+        # # Query dasar untuk mendapatkan semua resep
+        # query = Recipes.query
+
+        # Query untuk mendapatkan daftar resep dengan rata-rata rating
+        query = db.session.query(
+            Recipes,
+            func.avg(RatingRecipe.rating).label('average_rating')
+        ).outerjoin(RatingRecipe, RatingRecipe.recipe_id == Recipes.id)
+
+        # Menyortir berdasarkan rata-rata rating
+        if sort_order == 'asc':
+            query = query.group_by(Recipes.id).order_by(asc('average_rating'))
+        else:
+            query = query.group_by(Recipes.id).order_by(desc('average_rating'))
+            
+        # Mengambil hasil query
+        results = query.all()
+
+        # Menyusun data respons
+        recipe_data = []
+        for recipe, avg_rating in results:
+            recipe_dict = recipe.simple_view()
+            recipe_dict['average_rating'] = round(avg_rating, 1) if avg_rating is not None else 0.0
+            recipe_data.append(recipe_dict)
+
+        return jsonify(recipe_data), 200
+
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     
@@ -44,8 +102,22 @@ def get_recipes_by_country_id(country_id):
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
+@recipe_blueprint.route("/country/<string:country_name>", methods=["GET"])
+def get_recipes_by_country_name(country_name):
+    try:
+        # Menggunakan join untuk mendapatkan resep berdasarkan nama negara
+        recipes = db.session.query(Recipes).join(Country).filter(Country.country_name.ilike(f"%{country_name}%")).all()
+        
+        if recipes:
+            recipe_data = [recipe.simple_view() for recipe in recipes]
+            return jsonify(recipe_data), 200
+        else:
+            return jsonify({"message": "No recipes found for this country"}), 404
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
 #endpoint get recipe by title
-@recipe_blueprint.route("/title/<string:title>", methods=["GET"])
+@recipe_blueprint.route("/food/<string:title>", methods=["GET"])
 def get_recipes_by_title(title):
     try:
         recipes = Recipes.query.filter(func.lower(Recipes.food_name).contains(func.lower(title))).all()

@@ -56,19 +56,6 @@ class Recipes(db.Model):
         country_info = Country.query.filter_by(id=self.country_id).all()
         countries_list = [country.as_dict() for country in country_info] 
 
-        # # Dapatkan semua info komposisi berdasarkan ingredients
-        # ingredientdetail_info = IngredientDetails.query.filter_by(id=self.id).scalar()
-        # ingredient_info_list = [ingredientdetail.as_dict() for ingredientdetail in ingredientdetail_info] 
-
-        # # Dapatkan semua info alat masak berdasarkan utensils
-        # cooking_utensil_info = CookingUtensils.query.filter_by(id=self.id).scalar()
-        # cooking_utensil_info_list = [cooking_utensil.as_dict() for cooking_utensil in cooking_utensil_info] 
-
-        # # Dapatkan semua info cara memasak dan typenya berdasarkan how_to_cook
-        # how_to_cook_info = HowToCooks.query.filter_by(id=self.id).scalar()
-        # how_to_cook_info_list = [howtocooks.as_dict() for howtocooks in how_to_cook_info] 
-
-
         return{
             "id": self.id,
             "food_name": self.food_name,
@@ -109,6 +96,22 @@ class Recipes(db.Model):
             "created_at": self.created_at.isoformat(),  # Format ISO datetime string
             "updated_at": self.updated_at.isoformat() if self.updated_at else None  # Format ISO datetime string or None
         }
+
+
+
+
+
+        # # Dapatkan semua info komposisi berdasarkan ingredients
+        # ingredientdetail_info = IngredientDetails.query.filter_by(id=self.id).scalar()
+        # ingredient_info_list = [ingredientdetail.as_dict() for ingredientdetail in ingredientdetail_info] 
+
+        # # Dapatkan semua info alat masak berdasarkan utensils
+        # cooking_utensil_info = CookingUtensils.query.filter_by(id=self.id).scalar()
+        # cooking_utensil_info_list = [cooking_utensil.as_dict() for cooking_utensil in cooking_utensil_info] 
+
+        # # Dapatkan semua info cara memasak dan typenya berdasarkan how_to_cook
+        # how_to_cook_info = HowToCooks.query.filter_by(id=self.id).scalar()
+        # how_to_cook_info_list = [howtocooks.as_dict() for howtocooks in how_to_cook_info] 
 
     # country = db.relationship('Country', backref=db.backref('recipe', lazy=True))
     # food = db.relationship('Food', backref=db.backref('recipe'))
