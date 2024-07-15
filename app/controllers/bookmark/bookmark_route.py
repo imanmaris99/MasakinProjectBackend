@@ -16,6 +16,19 @@ def get_bookmarks():
         return jsonify(list_my_recipe_data), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+    
+# Endpoint untuk mendapatkan bookmark berdasarkan recipe_id (GET)
+@bookmark_blueprint.route("/user/<int:recipe_id>", methods=["GET"])
+def get_bookmarks_by_user_from_recipe_id(recipe_id):
+    try:
+        bookmarks = Bookmarks.query.filter_by(recipe_id=recipe_id).all()
+        if bookmarks:
+            bookmark_data = [bookmark.as_dict() for bookmark in bookmarks]
+            return jsonify(bookmark_data), 200
+        else:
+            return jsonify({"message": "No bookmarks found for this recipe"}), 404
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
 
 # Endpoint untuk mendapatkan bookmark berdasarkan user_id (GET)
 @bookmark_blueprint.route("/user/<int:user_id>", methods=["GET"])

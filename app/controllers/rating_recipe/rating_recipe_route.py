@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import func
+from app.models.country import Country
+from app.models.recipes import Recipes
 from app.models.users import User
 from app.utils.db import db
 from app.models.rating_recipe import RatingRecipe
@@ -54,9 +56,21 @@ def rate_recipe():
 def get_average_rating(recipe_id):
     try:
         average_rating = db.session.query(func.avg(RatingRecipe.rating)).filter_by(recipe_id=recipe_id).scalar()
-        
+        recipe = Recipes.query.filter_by(id=recipe_id).first()
+        country = Country.query.filter_by(id=recipe.country_id).first()
+        # if recipe is None:
+        #     return jsonify({"message":"Recipe not found"}), 404
+
         if average_rating is not None:
-            return jsonify({"recipe_id": recipe_id, "average_rating": round(average_rating, 2)}), 200
+            return jsonify(
+                {
+                "recipe_id": recipe_id, 
+                "food_name": recipe.food_name,
+                "country" : country.country_name,
+                "average_rating": round(average_rating, 2),
+                "dificulty_level": recipe.dificultly_level
+                }
+            ), 200
         else:
             return jsonify({"message": "No ratings found for this recipe"}), 404
     

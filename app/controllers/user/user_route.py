@@ -79,6 +79,56 @@ def login_user():
             return jsonify({"message": "Invalid credentials"}), 401
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+    
+@user_blueprint.route("/profile", methods=["GET"])
+@jwt_required()
+def create_user_profile():
+    try:
+        current_user_id = get_jwt_identity()
+
+        user = User.query.filter_by(id=current_user_id).first()
+
+        if not user:
+            return jsonify({"message":"User not found"}), 404
+        
+        user_data = {
+           "my_profile" : user.as_dict(),
+           "password" : user.password
+        }
+
+        return jsonify(user_data), 200
+
+    except Exception as e:
+        return jsonify({"message": str(e)}),500
+
+
+@user_blueprint.route('/edit', methods=["PUT"])
+@jwt_required()  # Membutuhkan token JWT untuk akses
+def update_profile():
+    try:
+        current_user_id = get_jwt_identity()
+        user = User.query.filter_by(id=current_user_id).first()
+
+        if user:
+            data = request.json
+            required_fields = ['username', 'firstname', 'lastname', 'email', 'facebook', 'google', 'phone']
+            for field in required_fields:
+                if field not in data:
+                    setattr(user, field, data[field])
+
+            db.session.commit()
+            response_data = user.as_dict()
+
+            return jsonify(response_data),200
+            
+        else:
+            return jsonify({"message":"User not found"})
+
+    except Exception as e:
+        return jsonify({"message":str(e)}),500
+    
+
+
 
 #ADMIN-->>>>
 # @user_blueprint.route("/register/admin", methods=["POST"])
@@ -161,4 +211,28 @@ def create_user_admin():
     except KeyError as e:
         return jsonify({"message": f"Missing key: {str(e)}"}), 400
     except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
+@user_blueprint.route('/delete/<int:user_id>', methods=["DELETE"])
+@jwt_required()  # Membutuhkan token JWT untuk akses
+def delete_profile(user_id):
+    try:
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(id=current_user_id).first()
+
+        # Pengecekan apakah pengguna adalah admin
+        if current_user.role != 'admin':
+            return jsonify({"message": "Unauthorized access"}), 403
+
+        user = User.query.get(user_id)
+
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({"message": "User profile deleted successfully"}), 200
+        else:
+            return jsonify({"message": "User not found"}), 404
+
+    except Exception as e:
+        db.session.rollback()
         return jsonify({"message": str(e)}), 500
