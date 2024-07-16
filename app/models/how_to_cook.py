@@ -9,6 +9,7 @@ class HowToCooks(db.Model):
     instructions= db.Column(ARRAY(db.Text), nullable=True)
     image = db.Column(ARRAY(db.Text), nullable=True)
     cooking_type_id = db.Column(db.Integer, db.ForeignKey('cooking_type.id'), nullable=True)
+    cooking_type_ids = db.Column(ARRAY(db.Integer), nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now()) 
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -27,6 +28,7 @@ class HowToCooks(db.Model):
             'image': self.image,
             'cooking_type_info': cookingtype_name_list if cookingtype_name_list else None,
             'cooking_type_id': self.cooking_type_id,
+            'cooking_type_ids': self.cooking_type_ids,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }   
