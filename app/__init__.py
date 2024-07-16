@@ -11,6 +11,7 @@ from app.controllers.country import country_route
 from app.controllers.rating_recipe import rating_recipe_route
 from app.controllers.bookmark import bookmark_route
 from dotenv import load_dotenv
+from flask_mail import Mail
 from flask_cors import CORS
 import os
 
@@ -43,6 +44,15 @@ migrate.init_app(app, db)
 # # Setting JWT secret key directly
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 jwt = JWTManager(app)
+
+#Flask-mail(reset password handler) config
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT') or 587)
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') is not None
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+
+mail = Mail(app)
 
 # # Registering blueprints
 app.register_blueprint(user_route.user_blueprint, url_prefix='/user')

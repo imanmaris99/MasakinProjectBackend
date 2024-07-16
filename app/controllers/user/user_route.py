@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from app.utils.helper import generate_reset_token,verify_reset_token,send_reset_email
 from flask_bcrypt import Bcrypt
 from app.utils.db import db
 from app.models.users import User
@@ -126,9 +127,39 @@ def update_profile():
 
     except Exception as e:
         return jsonify({"message":str(e)}),500
+
+# forgot password routes
+@user_blueprint.route('/forgot_password', methods=["POST"])
+def forgot_password():
+    data = request.json
+    email = data.get('email')
     
+    user = User.query.filter_by(email=email).first()
+    if user:
+        token = generate_reset_token(user.id)
+        send_reset_email(user, token)
+        return jsonify({"message": "Password reset link has been sent to your email"}), 200
+    else:
+        return jsonify({"message": "User with this email does not exist"}), 404
 
+#reset password routes
+@user_blueprint.route('/reset_password/<token>', methods=["POST"])
+def reset_password(token):
+    data = request.json
+    new_password = data.get('password')
+    
+    user_id = verify_reset_token(token)
+    if not user_id:
+        return jsonify({"message": "Invalid or expired token"}), 400
 
+    user = User.query.get(user_id)
+    if user:
+        hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+        user.password = hashed_password
+        db.session.commit()
+        return jsonify({"message": "Password has been reset"}), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
 
 #ADMIN-->>>>
 # @user_blueprint.route("/register/admin", methods=["POST"])
