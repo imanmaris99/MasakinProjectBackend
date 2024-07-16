@@ -61,7 +61,7 @@ def create_how_to_cook():
         new_cook_type = HowToCooks(
             recipe_id=data["recipe_id"],
             cooking_type_id=data["cooking_type_id"],
-            other_cooking_type_id = data.get("cooking_type_ids",None),
+            cooking_type_ids = data.get("cooking_type_ids",None),
             instructions = data.get("instructions",None),
             image = data.get("image",None)
         )
