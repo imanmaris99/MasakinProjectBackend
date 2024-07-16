@@ -16,7 +16,19 @@ def get_list_cooking_utensil():
         return jsonify(cook_utensil_data), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
-    
+
+@cooking_utensil_blueprint.route("/recipe_id/<int:recipe_id>", methods=["GET"])
+def get_utensil_lists_by_recipe_id(recipe_id):
+    try:
+        utensil_list = CookingUtensils.query.filter_by(recipe_id=recipe_id).all()
+        if utensil_list:
+            return jsonify([utensil.as_dict() for utensil in utensil_list]), 200
+        else:
+            return jsonify({"message: recipe_id not found"}), 404
+        
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+        
 @cooking_utensil_blueprint.route("/all/database", methods=["GET"])
 def get_list_utensil_database():
     try:

@@ -17,6 +17,18 @@ def get_list_cook_type():
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     
+@how_to_cook_blueprint.route("/recipe_id/<int:recipe_id>", methods=["GET"])
+def get_howtocook_list_by_recipe_id(recipe_id):
+    try:
+        howtocook_list = HowToCooks.query.filter_by(recipe_id=recipe_id).all()
+        if howtocook_list:
+            return jsonify([howtocook.as_dict() for howtocook in howtocook_list]), 200
+        else:
+            return jsonify({"message: recipe_id not found"}), 404
+        
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
 @how_to_cook_blueprint.route("/all/database", methods=["GET"])
 def get_detail_cooking_type():
     try:
