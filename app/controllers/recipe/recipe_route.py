@@ -170,8 +170,8 @@ def create_recipe():
 
         # Menyusun data respons
         response_data = new_recipe.as_dict()
-        response_data['written_by_name'] = current_user.name
-        
+        response_data['written_by_name'] = current_user.username
+
         # Mengembalikan respons dengan status 201
         return jsonify(response_data), 201
 
