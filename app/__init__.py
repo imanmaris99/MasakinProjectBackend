@@ -69,7 +69,7 @@ app.register_blueprint(bookmark_route.bookmark_blueprint, url_prefix='/bookmark'
 
 # Defining routes here
 @app.route('/')
-@cache.cached(timeout=10)
+@cache.cached(timeout=50)
 def index():
     return jsonify({'message': 'Access available !!!'})
 
