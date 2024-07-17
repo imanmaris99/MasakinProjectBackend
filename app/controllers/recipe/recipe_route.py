@@ -161,7 +161,7 @@ def create_recipe():
             cooking_time = data["cooking_time"],
             dificultly_level = data["dificultly_level"],
             source_of = data.get("source_of",None),
-            writen_by=data.get("writen_by")
+            writen_by=current_user_id
         )
 
         # Menambahkan dan menyimpan objek ke dalam database
@@ -170,7 +170,8 @@ def create_recipe():
 
         # Menyusun data respons
         response_data = new_recipe.as_dict()
-
+        response_data['written_by_name'] = current_user.name
+        
         # Mengembalikan respons dengan status 201
         return jsonify(response_data), 201
 
