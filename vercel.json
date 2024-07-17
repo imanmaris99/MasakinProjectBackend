@@ -2,7 +2,8 @@
     "version": 2,
     "builds": [
       { "src": "app/__init__.py", 
-        "use": "@vercel/python"
+        "use": "@vercel/python",
+        "config": { "maxDuration": 20 }
       }
     ],
     "routes": [
