@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask_caching import Cache
 from flask_jwt_extended import JWTManager
 from app.utils.db import db, migrate
 from app.models import users,country,rating_recipe,utensil_name,ingredient_name,cooking_type,recipes,cooking_utensils,ingredient_details,how_to_cook,bookmarks
@@ -17,6 +18,8 @@ import os
 
 # Initializing Flask application
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE':'simple'})
+
 
 CORS(app)
 
@@ -66,6 +69,7 @@ app.register_blueprint(bookmark_route.bookmark_blueprint, url_prefix='/bookmark'
 
 # Defining routes here
 @app.route('/')
+@cache.cached(timeout=10)
 def index():
     return jsonify({'message': 'Access available !!!'})
 
