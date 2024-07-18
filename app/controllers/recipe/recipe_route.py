@@ -44,15 +44,9 @@ def get_list_recipe_popular():
     try:
         # Mendapatkan parameter query untuk sorting
         sort_order = request.args.get('sort', 'desc')
-        date_filter = request.args.get('date')
-
-        # # Query dasar untuk mendapatkan semua resep
-        # query = Recipes.query
 
         # Query untuk mendapatkan daftar resep dengan rata-rata rating
-        query = db.session.query(
-            Recipes,
-            func.avg(RatingRecipe.rating).label('average_rating')
+        query = db.session.query(Recipes,func.avg(RatingRecipe.rating).label('average_rating')
         ).outerjoin(RatingRecipe, RatingRecipe.recipe_id == Recipes.id)
 
         # Menyortir berdasarkan rata-rata rating
@@ -122,7 +116,7 @@ def get_recipes_by_title(title):
     try:
         recipes = Recipes.query.filter(func.lower(Recipes.food_name).contains(func.lower(title))).all()
         if recipes:
-            recipe_data = [recipe.as_dict() for recipe in recipes]
+            recipe_data = [recipe.simple_view() for recipe in recipes]
             return jsonify(recipe_data), 200
         else:
             return jsonify({"message": "No recipes found with this title"}), 404
