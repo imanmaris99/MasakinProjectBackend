@@ -19,7 +19,7 @@ class HowToCooks(db.Model):
     def as_dict(self):
         # Dapatkan semua info type masak berdasarkan cooking_type_id
         cookingtype_name = CookingType.query.filter_by(id=self.cooking_type_id).all()
-        cookingtype_name_list = [cookingtype.as_dict() for cookingtype in cookingtype_name] 
+        cookingtype_name_list = [cookingtype.simple_view() for cookingtype in cookingtype_name] 
 
         return {
             'id': self.id,

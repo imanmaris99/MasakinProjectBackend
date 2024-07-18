@@ -11,7 +11,7 @@ class Recipes(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     food_name = db.Column(db.String(255), nullable=True)
     food_image = db.Column(db.String(255), nullable=True)
-    food_info = db.Column(db.Text, nullable=True)
+    food_info = db.Column(ARRAY(db.Text), nullable=True)
     country_id = db.Column(db.Integer, db.ForeignKey('country.id'), nullable=False)
     instructions = db.Column(ARRAY(db.Text), nullable=True)
     servings= db.Column(db.Integer, nullable=False)
@@ -38,12 +38,12 @@ class Recipes(db.Model):
 
     def get_ingredient_details(self):
         ingredientdetail_info = IngredientDetails.query.filter_by(recipe_id=self.id).all()
-        ingredient_info_list = [ingredientdetail.as_dict() for ingredientdetail in ingredientdetail_info]
+        ingredient_info_list = [ingredientdetail.updated_view() for ingredientdetail in ingredientdetail_info]
         return ingredient_info_list
     
     def get_cooking_utensil(self):
         cooking_utensil_info = CookingUtensils.query.filter_by(recipe_id=self.id).all()
-        cooking_utensil_info_list = [cooking_utensil.as_dict() for cooking_utensil in cooking_utensil_info] 
+        cooking_utensil_info_list = [cooking_utensil.as_update() for cooking_utensil in cooking_utensil_info] 
         return cooking_utensil_info_list
     
     def get_how_to_cook(self):

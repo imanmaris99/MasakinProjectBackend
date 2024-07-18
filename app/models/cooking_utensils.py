@@ -27,3 +27,11 @@ class CookingUtensils(db.Model):
             "created_at": self.created_at,
             "updated_at": self.updated_at
         }
+    
+    def as_update(self):
+        return {
+            "recipe_id": self.recipe_id,
+            "utensil_name": self.utensilname.name,
+            "utensil_image": self.utensilname.image,
+            "utensil_info": self.utensilname.info
+        }

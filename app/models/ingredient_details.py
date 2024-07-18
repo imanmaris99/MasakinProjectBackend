@@ -17,14 +17,24 @@ class IngredientDetails(db.Model):
     def as_dict(self):
         # Dapatkan semua info bahan berdasarkan ingredient_name_id
         ingredient_name_info = IngredientName.query.filter_by(id=self.ingredient_name_id).all()
-        ingredient_name_info_list = [ingredient_name.as_dict() for ingredient_name in ingredient_name_info] 
+        ingredient_name_info_list = [ingredient_name.simple_view() for ingredient_name in ingredient_name_info] 
 
         return {
             'id': self.id,
             'recipe_id': self.recipe_id,
             'ingredient_name_info': ingredient_name_info_list if ingredient_name_info_list else None,
+            'ingredient_name': self.ingredientname.name,
             'ingredient_name_id': self.ingredient_name_id,
             'dose': self.dose,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
+    
+    def updated_view(self):
+        return{
+            'recipe_id': self.recipe_id,
+            'ingredient_name': self.ingredientname.name,
+            'ingredient_image': self.ingredientname.image,
+            'ingredient_info': self.ingredientname.info,
+            'dose': self.dose,
         }

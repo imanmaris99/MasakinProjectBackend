@@ -19,3 +19,10 @@ class IngredientName(db.Model):
             "created_at": self.created_at.isoformat(),  # Format ISO datetime string
             "updated_at": self.updated_at.isoformat() if self.updated_at else None  # Format ISO datetime string or None
         }
+    
+    def simple_view(self):
+        return{
+            "name": self.name,
+            "image": self.image,
+            "info": self.info,
+        }
