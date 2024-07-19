@@ -64,6 +64,7 @@ class Recipes(db.Model):
             # "country_id": self.country_id,
             # "country_info": countries_list,
             "country_name": self.country.country_name,
+            "serving": self.servings,
             "ingredient_info": self.get_ingredient_details() if self.get_ingredient_details() else None,
             "utensil_info": self.get_cooking_utensil() if self.get_cooking_utensil() else None,
             "how_to_cook_info": self.get_how_to_cook() if self.get_how_to_cook() else None,
