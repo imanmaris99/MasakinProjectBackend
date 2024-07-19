@@ -47,7 +47,7 @@ class Recipes(db.Model):
         return cooking_utensil_info_list
     
     def get_how_to_cook(self):
-        how_to_cook_info = HowToCooks.query.filter_by(recipe_id=self.id).all()
+        how_to_cook_info = HowToCooks.query.filter_by(recipe_id=self.id).order_by(HowToCooks.id).all()
         how_to_cook_info_list = [howtocooks.updated_view() for howtocooks in how_to_cook_info] 
         return how_to_cook_info_list
 
