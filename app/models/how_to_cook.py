@@ -6,7 +6,7 @@ class HowToCooks(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'), nullable=True)
-    instructions= db.Column(ARRAY(db.Text), nullable=True)
+    instructions= db.Column(db.Text, nullable=True)
     image = db.Column(ARRAY(db.Text), nullable=True)
     cooking_type_id = db.Column(db.Integer, db.ForeignKey('cooking_type.id'), nullable=True)
     cooking_type_ids = db.Column(ARRAY(db.Integer), nullable=True)
@@ -32,3 +32,15 @@ class HowToCooks(db.Model):
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }   
+    
+    def updated_view(self):
+        cookingtype_name = CookingType.query.filter_by(id=self.cooking_type_id).all()
+        cookingtype_name_list = [cookingtype.simple_view() for cookingtype in cookingtype_name] 
+        
+        return{
+            'recipe_id': self.recipe_id,
+            'instructions': self.instructions,
+            'image': self.image,
+            'cooking_type_info': cookingtype_name_list if cookingtype_name_list else None,
+            'cooking_type_id': self.cooking_type_id
+        }
