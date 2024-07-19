@@ -13,8 +13,19 @@ bcrypt = Bcrypt()
 # sementara dan bisa berubah
 
 @user_blueprint.route("/", methods=["GET"])
+@jwt_required()
 def get_list_user():
     try:
+        current_user_id = get_jwt_identity()
+        user = User.query.filter_by(id=current_user_id).first()
+
+        # Cek jika pengguna ditemukan dan jika pengguna adalah admin
+        if user is None:
+            return jsonify({"message": "User not found"}), 401  # Unauthorized jika pengguna tidak ditemukan
+
+        if user.role != 'admin':
+            return jsonify({"message": "You are not authorized to view this resource"}), 401  # Unauthorized jika bukan admin
+        
         users = User.query.all()
         user_data = [user.as_dict() for user in users]
         return jsonify(user_data), 200

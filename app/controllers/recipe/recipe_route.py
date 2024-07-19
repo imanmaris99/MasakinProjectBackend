@@ -12,8 +12,16 @@ recipe_blueprint = Blueprint('recipe_endpoint', __name__)
 
 # Endpoint untuk mendapatkan daftar makanan (GET) dengan filter berdasarkan tanggal pembuatan
 @recipe_blueprint.route("/all", methods=["GET"])
+@jwt_required()
 def get_list_recipes():
     try:
+        current_user_id = get_jwt_identity()
+
+        user = User.query.filter_by(id=current_user_id).first()
+
+        if not user:
+            return jsonify({"message":"User not found"}), 404
+        
         # Mendapatkan parameter query untuk sorting
         sort_order = request.args.get('sort', 'desc')
         date_filter = request.args.get('date')
@@ -40,8 +48,16 @@ def get_list_recipes():
 
 # Endpoint untuk mendapatkan daftar makanan (GET) dengan filter berdasarkan rating paling tinggi
 @recipe_blueprint.route("/all/popular", methods=["GET"])
+@jwt_required()
 def get_list_recipe_popular():
     try:
+        current_user_id = get_jwt_identity()
+
+        user = User.query.filter_by(id=current_user_id).first()
+
+        if not user:
+            return jsonify({"message":"User not found"}), 404
+
         # Mendapatkan parameter query untuk sorting
         sort_order = request.args.get('sort', 'desc')
 
@@ -72,8 +88,16 @@ def get_list_recipe_popular():
     
 #endpoint get recipe by id 
 @recipe_blueprint.route("/<int:id>", methods=["GET"])
+@jwt_required()
 def get_list_recipe_by_id(id):
     try:
+        current_user_id = get_jwt_identity()
+
+        user = User.query.filter_by(id=current_user_id).first()
+
+        if not user:
+            return jsonify({"message":"User not found"}), 404
+
         recipe = Recipes.query.get(id)
         if recipe :
             return jsonify(recipe.as_dict()), 200
@@ -85,8 +109,16 @@ def get_list_recipe_by_id(id):
     
 #endpoint get recipe by country 
 @recipe_blueprint.route("/country/<int:country_id>", methods=["GET"])
+@jwt_required()
 def get_recipes_by_country_id(country_id):
     try:
+        current_user_id = get_jwt_identity()
+
+        user = User.query.filter_by(id=current_user_id).first()
+
+        if not user:
+            return jsonify({"message":"User not found"}), 404
+    
         recipes = Recipes.query.filter_by(country_id=country_id).all()
         if recipes:
             recipe_data = [recipe.simple_view() for recipe in recipes]
@@ -97,8 +129,16 @@ def get_recipes_by_country_id(country_id):
         return jsonify({"message": str(e)}), 500
 
 @recipe_blueprint.route("/country/<string:country_name>", methods=["GET"])
+@jwt_required()
 def get_recipes_by_country_name(country_name):
     try:
+        current_user_id = get_jwt_identity()
+
+        user = User.query.filter_by(id=current_user_id).first()
+
+        if not user:
+            return jsonify({"message":"User not found"}), 404
+
         # Menggunakan join untuk mendapatkan resep berdasarkan nama negara
         recipes = db.session.query(Recipes).join(Country).filter(Country.country_name.ilike(f"%{country_name}%")).all()
         
@@ -112,8 +152,16 @@ def get_recipes_by_country_name(country_name):
 
 #endpoint get recipe by title
 @recipe_blueprint.route("/food/<string:title>", methods=["GET"])
+@jwt_required()
 def get_recipes_by_title(title):
     try:
+        current_user_id = get_jwt_identity()
+
+        user = User.query.filter_by(id=current_user_id).first()
+
+        if not user:
+            return jsonify({"message":"User not found"}), 404
+
         recipes = Recipes.query.filter(func.lower(Recipes.food_name).contains(func.lower(title))).all()
         if recipes:
             recipe_data = [recipe.simple_view() for recipe in recipes]

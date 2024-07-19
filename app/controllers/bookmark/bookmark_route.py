@@ -8,38 +8,44 @@ from app.models.bookmarks import Bookmarks
 
 bookmark_blueprint = Blueprint('bookmark_endpoint', __name__)
 
-@bookmark_blueprint.route("/all", methods=["GET"])
-def get_bookmarks():
+# ALL USER CAN ACCESS ----->>   
+
+@bookmark_blueprint.route("/my_bookmarks", methods=["GET"])
+@jwt_required()
+def get_my_bookmarks():
     try:
-        list_my_recipes = Bookmarks.query.all()
-        list_my_recipe_data = [list_my_recipe.as_dict() for list_my_recipe in list_my_recipes]
+        # Mendapatkan ID pengguna dari token JWT
+        current_user_id = get_jwt_identity()
+
+        # Query untuk mendapatkan bookmark yang terkait dengan pengguna saat ini
+        list_my_recipes = Bookmarks.query.filter_by(user_id=current_user_id).all()
+
+        # Jika tidak ada bookmark ditemukan
+        if not list_my_recipes:
+            return jsonify({"message": "No bookmarks found for this user"}), 404
+
+        # Menyusun data respons
+        list_my_recipe_data = [bookmark.as_dict() for bookmark in list_my_recipes]
         return jsonify(list_my_recipe_data), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     
-# Endpoint untuk mendapatkan bookmark berdasarkan recipe_id (GET)
-@bookmark_blueprint.route("/recipe/<int:recipe_id>", methods=["GET"])
-def get_bookmarks_by_user_from_recipe_id(recipe_id):
-    try:
-        bookmarks = Bookmarks.query.filter_by(recipe_id=recipe_id).all()
-        if bookmarks:
-            bookmark_data = [bookmark.as_dict() for bookmark in bookmarks]
-            return jsonify(bookmark_data), 200
-        else:
-            return jsonify({"message": "No bookmarks found for this recipe"}), 404
-    except Exception as e:
-        return jsonify({"message": str(e)}), 500
 
-# Endpoint untuk mendapatkan bookmark berdasarkan user_id (GET)
-@bookmark_blueprint.route("/user/<int:user_id>", methods=["GET"])
-def get_bookmarks_by_user_id(user_id):
+@bookmark_blueprint.route("/my_bookmarks/recipe/<int:recipe_id>", methods=["GET"])
+@jwt_required()
+def get_my_bookmarks_by_user_from_recipe_id(recipe_id):
     try:
-        bookmarks = Bookmarks.query.filter_by(user_id=user_id).all()
-        if bookmarks:
-            bookmark_data = [bookmark.as_dict() for bookmark in bookmarks]
-            return jsonify(bookmark_data), 200
+        # Mendapatkan ID pengguna dari token JWT
+        current_user_id = get_jwt_identity()
+
+        # Query untuk mendapatkan bookmark yang terkait dengan pengguna dan resep saat ini
+        bookmark = Bookmarks.query.filter_by(user_id=current_user_id, recipe_id=recipe_id).first()
+
+        if bookmark:
+            # Mengembalikan data bookmark dalam format JSON
+            return jsonify(bookmark.as_dict()), 200
         else:
-            return jsonify({"message": "No bookmarks found for this user"}), 404
+            return jsonify({"message": "No bookmark found for this recipe for the current user"}), 404
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
@@ -93,3 +99,65 @@ def delete_bookmark(recipe_id):
 
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+
+# ADMIN ACCESS  --->      
+
+@bookmark_blueprint.route("/all", methods=["GET"])
+@jwt_required()
+def get_bookmarks():
+    try:
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(id=current_user_id).first()
+
+        # Pengecekan apakah pengguna adalah admin
+        if current_user.role != 'admin':
+            return jsonify({"message": "Unauthorized access"}), 403
+
+        list_my_recipes = Bookmarks.query.all()
+        list_my_recipe_data = [list_my_recipe.as_dict() for list_my_recipe in list_my_recipes]
+        return jsonify(list_my_recipe_data), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
+# Endpoint untuk mendapatkan bookmark berdasarkan recipe_id (GET)
+@bookmark_blueprint.route("/recipe/<int:recipe_id>", methods=["GET"])
+@jwt_required()
+def get_bookmarks_by_user_from_recipe_id(recipe_id):
+    try:
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(id=current_user_id).first()
+
+        # Pengecekan apakah pengguna adalah admin
+        if current_user.role != 'admin':
+            return jsonify({"message": "Unauthorized access"}), 403
+    
+        bookmarks = Bookmarks.query.filter_by(recipe_id=recipe_id).all()
+        if bookmarks:
+            bookmark_data = [bookmark.as_dict() for bookmark in bookmarks]
+            return jsonify(bookmark_data), 200
+        else:
+            return jsonify({"message": "No bookmarks found for this recipe"}), 404
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+# Endpoint untuk mendapatkan bookmark berdasarkan user_id (GET)
+@bookmark_blueprint.route("/user/<int:user_id>", methods=["GET"])
+@jwt_required()
+def get_bookmarks_by_user_id(user_id):
+    try:
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(id=current_user_id).first()
+
+        # Pengecekan apakah pengguna adalah admin
+        if current_user.role != 'admin':
+            return jsonify({"message": "Unauthorized access"}), 403
+
+        bookmarks = Bookmarks.query.filter_by(user_id=user_id).all()
+        if bookmarks:
+            bookmark_data = [bookmark.as_dict() for bookmark in bookmarks]
+            return jsonify(bookmark_data), 200
+        else:
+            return jsonify({"message": "No bookmarks found for this user"}), 404
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
