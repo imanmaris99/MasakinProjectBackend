@@ -174,7 +174,7 @@ Untuk mempermudah akses dan penggunaan API, dokumentasi API aplikasi Masakin ter
 | Nama                | Peran                        | Kontak                           |
 |---------------------|------------------------------|----------------------------------|
 | **Iman Maris**        | Pengembang Backend (Setup Database, Relasi antar models, dll)           | [marisiman99@gmail.com](marisiman99@gmail.com) |
-| **Jane Smith**      | Pengembang Backend (CRUD API , tester/ debuger)          | [yosaphatharwindra@gmail.com](yosaphatharwindra@gmail.com) |
+| **Yosaphat Harwindra**      | Pengembang Backend (CRUD API , tester/ debuger)          | [yosaphatharwindra@gmail.com](yosaphatharwindra@gmail.com) |
 
 
 ## Penutup
@@ -184,7 +184,9 @@ Semoga proyek ini dapat berjalan dengan lancar dan memberikan manfaat pembelajar
 ---
 
 <div align="center">
-    <sub>Made by the Masakin Project Team. Powered by Vercel and Supabase.</sub>
+    <p>Made by the Masakin Project Team (July 2024).
+    </p>
+    <sub>Powered by Vercel and Supabase.</sub>
 </div>
 
 <div align="center">
