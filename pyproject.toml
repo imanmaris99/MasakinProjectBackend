@@ -22,6 +22,8 @@ flask-migrate = "^4.0.7"
 gunicorn = "^22.0.0"
 flask-mail = "^0.10.0"
 flask-caching = "^2.3.0"
+flask-restx = "^1.3.0"
+flask-swagger-ui = "^4.11.1"
 
 
 [build-system]

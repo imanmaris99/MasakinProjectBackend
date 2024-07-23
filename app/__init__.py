@@ -1,6 +1,8 @@
-from flask import Flask, jsonify
+from flask import Flask, json, jsonify
 from flask_caching import Cache
 from flask_jwt_extended import JWTManager
+from flask_swagger_ui import get_swaggerui_blueprint
+from flask_restx import Api
 from app.utils.db import db, migrate
 from app.models import users,country,rating_recipe,utensil_name,ingredient_name,cooking_type,recipes,cooking_utensils,ingredient_details,how_to_cook,bookmarks
 from app.controllers.user import user_route
@@ -19,20 +21,8 @@ import os
 # Initializing Flask application
 app = Flask(__name__)
 cache = Cache(app, config={'CACHE_TYPE':'simple'})
-
-
 CORS(app)
-
 load_dotenv()
-
-# Debugging output to check environment variables
-# print("DB_TYPE:", os.getenv('DB_TYPE'))
-# print("DB_NAME:", os.getenv('DB_NAME'))
-# print("DB_USER:", os.getenv('DB_USER'))
-# print("DB_PASSWORD:", os.getenv('DB_PASSWORD'))
-# print("DB_HOST:", os.getenv('DB_HOST'))
-# print("DB_PORT:", os.getenv('DB_PORT'))
-# print("DATABASE_URI:", os.getenv('DATABASE_URI'))
 
 # Setting database URI directly
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
@@ -41,7 +31,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initializing database
 db.init_app(app)
-
 migrate.init_app(app, db)
 
 # # Setting JWT secret key directly
@@ -56,6 +45,19 @@ jwt = JWTManager(app)
 # app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
 # mail = Mail(app)
+
+# Swagger UI Configuration
+SWAGGER_URL = '/swagger'
+API_URL = '/static/openapi.json'  # Ensure this URL is correct
+swagger_ui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={'app_name': "Masakin API"}
+)
+app.register_blueprint(swagger_ui_blueprint, url_prefix=SWAGGER_URL)
+
+# Registering routes directly with Api
+api = Api(app, doc=None)  # Disable default Swagger UI route if using flask-swagger-ui
 
 # # Registering blueprints
 app.register_blueprint(user_route.user_blueprint, url_prefix='/user')
