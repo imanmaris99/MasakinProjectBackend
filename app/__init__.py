@@ -2,7 +2,6 @@ from flask import Flask, json, jsonify
 from flask_caching import Cache
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
-from flask_restx import Api
 from app.utils.db import db, migrate
 from app.models import users,country,rating_recipe,utensil_name,ingredient_name,cooking_type,recipes,cooking_utensils,ingredient_details,how_to_cook,bookmarks
 from app.controllers.user import user_route
@@ -56,8 +55,8 @@ swagger_ui_blueprint = get_swaggerui_blueprint(
 )
 app.register_blueprint(swagger_ui_blueprint, url_prefix=SWAGGER_URL)
 
-# Registering routes directly with Api
-api = Api(app, doc=None)  # Disable default Swagger UI route if using flask-swagger-ui
+# # Registering routes directly with Api
+# api = Api(app, doc=None)  # Disable default Swagger UI route if using flask-swagger-ui
 
 # # Registering blueprints
 app.register_blueprint(user_route.user_blueprint, url_prefix='/user')
