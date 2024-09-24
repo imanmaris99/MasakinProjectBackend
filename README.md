@@ -159,10 +159,15 @@ Setelah kamu membuat atau memodifikasi model database, buatlah skrip migrasi den
 Dengan mengikuti langkah-langkah ini, kamu dapat mengkonfigurasi dan menggunakan Flask-Migrate dengan Poetry dalam proyek Flask kamu. Ini memungkinkan kamu untuk mengelola perubahan skema database secara efisien.
 ## URL Deployment
 
-Aplikasi backend ini telah dideploy menggunakan layanan [Vercel](https://vercel.com) dan dapat diakses melalui URL berikut: [https://masakinprojectbe.vercel.app/](https://masakinprojectbe.vercel.app/). URL ini dapat digunakan oleh aplikasi frontend untuk mengakses berbagai endpoint yang disediakan oleh backend, seperti manajemen resep, otentikasi pengguna, dan lain-lain.
+Aplikasi backend ini telah dideploy menggunakan layanan [Vercel](https://vercel.com) dan dapat diakses melalui URL berikut: [https://masakinprojectbe.vercel.app/](https://masakinprojectbe.vercel.app/). URL ini dapat digunakan oleh aplikasi frontend untuk mengakses berbagai endpoint yang disediakan oleh backend, seperti manajemen resep, otentikasi pengguna, dan lain-lain. 
 
 ## Dokumentasi API
-Untuk mempermudah akses dan penggunaan API, dokumentasi API aplikasi Masakin tersedia di Postman. Kamu dapat mengimpor koleksi Postman menggunakan [tautan ini](https://documenter.getpostman.com/view/32137902/2sA3e1DAgX#intro). Dokumentasi ini mencakup:
+Untuk mempermudah akses dan penggunaan API, dokumentasi API aplikasi Masakin tersedia di Postman. 
+</br> 
+Kamu dapat mengimpor koleksi [Postman](https://postman.com) menggunakan url ini [https://documenter.getpostman.com/view/32137902/2sA3e1DAgX#intro](https://documenter.getpostman.com/view/32137902/2sA3e1DAgX#intro) </br>
+dan dapat juga menggunakan [Swagger](https://swagger.com) dengan url ini untuk ujicoba : [https://masakinprojectbe.vercel.app/swagger/](https://masakinprojectbe.vercel.app/swagger/).
+</br>
+Dokumentasi ini mencakup:
 
 - **Endpoint API:** Deskripsi lengkap setiap endpoint, metode HTTP, parameter, dan contoh permintaan serta respons.
 - **Autentikasi:** Panduan penggunaan JWT untuk autentikasi API (Bearer Token).
